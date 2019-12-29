@@ -1,0 +1,14 @@
+{
+  "name": "health",
+  "version": "1.0.0",
+  "description": "1uphealth",
+  "dependencies": {
+    "presto-client": "0.6.0"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Natalie Nguyen",
+  "license": "ISC"
+}
