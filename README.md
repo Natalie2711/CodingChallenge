@@ -1,31 +1,34 @@
 ## 1upHealth Coding Challenge 
-This nodeJS project returns values of how many allergies the patient Marshall526 Zboncak558 have. 
+This nodeJS project returns values of how many allergies the patient Marshall526 Zboncak558 has. 
 
 ## Setup
-### 1. Download nodeJS from this website: https://nodejs.org/en/download/
-### 2. Create a nodeJS project:
+1. Download nodeJS from this website: https://nodejs.org/en/download/ 
+2. Create a nodeJS project:
 ```npm init```
-### 3. Install presto-client
+3. Install presto-client
 * Option 1: ```npm install -g presto-client```
-* Option 2: add `presto-client` to `dependencies` in `package.json`.
+* Option 2: add `presto-client` version `0.6.0` to `dependencies` in `package.json`.
 
 ## Solution
-1. Create a file named `app.js`. The main logic is implemented in that file.
-2. Presto SQL logic:
-* Table `patient` has info about patients (keyed by the field `id` in the json object).
-* Table `allergyintolerance` has info about all alergies (also keyed by `id`). It also has a reverse mapping from allergy to patient stored in `$.patient.reference` field in the json object.
-* We will join the two tables to get the allergies a patient has. The `JOIN` condition is: 
+1. Create file `app.js`. Connection to bulk data system, SQL statement and result are implemented in this file. 
+ 
+2. SQL logic:
+* Table `patient` has information about patients (identified by `$.id` field in the json object).
+* Table `allergyintolerance` has information about all alergies (each object is also identified by `$.id` field). This table includes mapping from allergies to patient through `$.patient.reference` field in the json object.
+* We will join the two tables to get the allergies each patient has. The `JOIN` is on `$.id` field on `patient` table (p) and `$.patient.reference` field on `allergyintolerance` table (a).
 ```
-JSON_EXTRACT_SCALAR(p.json, '$.id') = SUBSTR(JSON_EXTRACT_SCALAR(a.json, '$.patient.reference'), 10) -- use substr to remove the urn:uuid: prefix.
+JSON_EXTRACT_SCALAR(p.json, '$.id') = SUBSTR(JSON_EXTRACT_SCALAR(a.json, '$.patient.reference'), 10) -- use substr function to remove the urn:uuid: prefix from the $.patient.reference field.
 ```
-* Finally, we will use `WHERE` to select a patient given the first and last name.
-* Note that even though the field `$.substance.coding` in `allergyintolerance` is a list, I've verified that this list only has length of `1` for every allergy in the table.
+* Finally, we will use `WHERE` to select a specific patient based on first and last name.
+* We select `$.substance.coding[0].code` and `$.substance.coding[0].display` fields from `allergyintolerance` table as output.
+* Note: the field `$.substance.coding` in `allergyintolerance` is a list. The following query is used to verify that this list only has length of `1` for every allergy in the table and, therefore, we can take both `code` and `display` values from the first element `$.substance.coding[0]` (also the only element) in the list.
 ```
 var query = "SELECT JSON_ARRAY_LENGTH(JSON_EXTRACT(json, '$.substance.coding')), COUNT(1) from allergyintolerance group by 1";
 
 Return value:
 [ [ 1, 589067 ] ]
 ```
-Thus, it's safe to get the `code` and `display` values from the first element in the list.
+
 ## Execute
 ### Run `node app.js`
+

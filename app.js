@@ -23,7 +23,7 @@ var query =
     "JSON_EXTRACT_SCALAR(p.json,'$.name[0].given[0]') = 'Marshall526' " ;
 
 // To verify that every list in '$.substance.coding' only has length of 1.
-// var query = "select JSON_ARRAY_LENGTH(JSON_EXTRACT(json, '$.substance.coding')), count(*) from allergyintolerance group by 1";
+//var query = "select JSON_ARRAY_LENGTH(JSON_EXTRACT(json, '$.substance.coding')), count(*) from allergyintolerance group by 1";
 
 // Query the Analytics Engine
 client.execute({
