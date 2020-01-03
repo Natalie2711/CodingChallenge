@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "1uphealth",
   "dependencies": {
+    "console.table": "^0.10.0",
     "presto-client": "0.6.0"
   },
   "main": "index.js",

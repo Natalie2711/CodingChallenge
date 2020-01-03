@@ -8,7 +8,7 @@
 // Date: 12/28/2019
 //
 /////////////////////////////////////////////////////////////////////
-
+const cTable = require('console.table');
 // Set up JDBC connection
 var presto = require('presto-client');
 var client = new presto.Client({user: 'presto', host: '34.74.56.14', catalog: 'hive', schema: 'leap'});
@@ -33,6 +33,15 @@ client.execute({
     state:   function(error, query_id, stats){},
     columns: function(error, data){},
     data:    function(error, data, columns, stats){ console.log(data); },
+    data:    function(error, data, columns, stats) {
+        formatted_result = []; 
+        for (index = 0; index < data.length; index++) {
+            formatted_result.push({Code: data[index][0], Description: data[index][1]});
+        }
+        console.table(formatted_result.sort((a, b) => (a.Description > b.Description) ? 1 : -1));
+     },
     success: function(error, stats){},
     error:   function(error,){console.log(error)}
 });
+
+
